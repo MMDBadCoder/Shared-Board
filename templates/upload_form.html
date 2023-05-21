@@ -1,0 +1,21 @@
+<div class="ui raised segment">
+    <h2 class="ui header">Sending a post</h2>
+    <form class="ui form" method="post" action="{% url 'upload-post' %}" enctype="multipart/form-data">
+        <div class="field">
+            <label>Text</label>
+            <label>
+                <textarea name="text" placeholder="text"></textarea>
+            </label>
+        </div>
+        <div class="ui placeholder segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Add a document to your post.
+            </div>
+            <input type="file" name="file" placeholder="Add Document" class="ui primary button"
+                   style="min-width: 900px; max-width: 1000px; min-height: 100px; max-height: 200px"/>
+        </div>
+        <button class="ui button blue" type="submit">Upload</button>
+        {% csrf_token %}
+    </form>
+</div>

@@ -1,0 +1,67 @@
+<table class="ui celled striped table blue">
+    <thead>
+    <tr>
+        <th colspan="3" style="font-size: 20px">All Posts</th>
+    </tr>
+    <tr class="active">
+        <td class="collapsing">
+            <i class="folder icon"></i> Content
+        </td>
+        <td class="right aligned collapsing">Name</td>
+        <td class="right aligned collapsing" style="min-width: 70px">Uploaded at</td>
+        <td class="right aligned collapsing">Delete</td>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for post in posts %}
+        <tr style="background-color: {{ colors|get_item:post.ip }}">
+            <td style="font-size: 20px; font-family: sans-serif;">
+                {% if post.file %}
+                    <i class="folder icon"></i>
+                    <a href="{{ post.file.url }}" target="_blank">{{ post.file.name|slice:"15:" }}</a>
+                    <label style="font-size: 15px; color: rgba(13,2,127,0.5); font-weight: bold">
+                        ({{ post.file.size | filesizeformat }})
+                    </label>
+                {% endif %}
+                {% if post.text %}
+                    {% if post.text|is_link %}
+                        <i class="linkify red icon"></i>
+                        <a style="color: red; font-weight: lighter"
+                           href="{{ post.text }}">{{ post.text }}</a>
+                    {% else %}
+                        <div style="color: darkslateblue; font-weight: bolder"
+                             id="p{{ post.id }}">{{ post.text|linebreaks }}</div>
+                        <button class="ui button grey" style="float: right" onclick="copyPostContent('p{{ post.id }}')">
+                            copy
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td class="right aligned" style="font-size: 20px">
+                {{ names|get_item:post.ip }}
+                <span style="font-size: 10px">({{ post.ip }})</span>
+            </td>
+            <td class="right aligned">{{ post.uploaded_at | timesince }} ago</td>
+            {% if is_admin or ip == post.ip %}
+                <td class="right aligned">
+                    <a href="{% url 'delete-post' post.id %}">
+                        <i class="trash alternate outline red big icon"></i>
+                    </a>
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function copyPostContent(id) {
+        var copyText = document.getElementById(id);
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(copyText.textContent);
+        } else {
+            alert('The Clipboard API is not available.');
+        }
+    }
+</script>
